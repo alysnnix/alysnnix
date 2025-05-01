@@ -1,5 +1,5 @@
 <div align="center">
-  <img align="center" src="https://raw.githubusercontent.com/alysnnix/alysnnix/main/assets/logo_idle.gif">
+  <img align="center" src="./assets/logo_idle.gif">
 </div>
 
 <br />
