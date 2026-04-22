@@ -18,9 +18,8 @@
 
 <br clear="all" />
 
-currently studying elixir on the side and digging deeper into advanced programming concepts like functional design, concurrency models, and the stuff that makes languages tick under the hood.
-
-also going deep into nix, standardizing every one of my systems to it, and honestly feeling like it's a revolution.
+> Exploring Elixir to deepen my understanding of functional design and concurrency. Going all-in on Nix, declaratively standardizing my workflow with Flakes and Home Manager.
+> Alongside this, I'm heavily exploring AI-driven development, building custom autonomous loops and multi-agent workflows right in the terminal
 
 ## most used
 
