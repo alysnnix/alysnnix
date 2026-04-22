@@ -1,29 +1,26 @@
-<div align="center">
+# hey, i'm aly <img src="./assets/bongo-cat.gif" alt="bongo cat" height="50" />
 
-<pre>
-      _
-  __ _| |_   _
- / _` | | | | |
-| (_| | | |_| |
- \__,_|_|\__, |
-         |___/
-</pre>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/aly-logo-dark.svg">
+  <img align="left" height="200" src="./assets/aly-logo-light.svg" alt="aly" width="300" hspace="20" />
+</picture>
 
-<pre>
-╭─ aly@github ────────────────────────────╮
-│                                         │
-│  role      software engineer @ seazone  │
-│  from      brazil                       │
-│  stack     typescript · go · nix        │
-│            python · rust · shell        │
-│  editor    neovim                       │
-│  os        nixos — i use nix, btw       │
-│  contact   aly@alysnnix.dev             │
-│                                         │
-╰─────────────────────────────────────────╯
-</pre>
+```nix
+{
+  name     = "alysson alcantara";
+  role     = "software engineer @ seazone";
+  location = "brazil";
+  stack    = [ "typescript" "go" "nix" "python" "shell" ];
+  os       = "nixos";
+  contact  = "aly@alysnnix.dev";
+}
+```
 
-</div>
+<br clear="all" />
+
+currently studying elixir on the side and digging deeper into advanced programming concepts like functional design, concurrency models, and the stuff that makes languages tick under the hood.
+
+## most used
 
 <!--START:langs-->
 ```text
