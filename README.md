@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/aly-logo-dark.svg">
-  <img align="left" height="200" src="./assets/aly-logo-light.svg" alt="aly" width="300" hspace="20" />
+  <img align="left" height="200" src="./assets/aly-logo-light.svg" alt="aly" width="300" hspace="15" />
 </picture>
 
 ```nix
