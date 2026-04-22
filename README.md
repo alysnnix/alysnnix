@@ -10,7 +10,7 @@
   name     = "alysson alcantara";
   role     = "software engineer @ seazone";
   location = "brazil";
-  stack    = [ "typescript" "go" "nix" "python" "shell" ];
+  stack    = [ "typescript" "go" "nix" "python" "sh" ];
   os       = "nixos";
   contact  = "aly@alysnnix.dev";
 }
