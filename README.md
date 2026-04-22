@@ -18,7 +18,7 @@
 
 <br clear="all" />
 
-currently studying elixir on the side and digging deeper into advanced programming concepts like functional design, concurrency models, and the stuff that makes languages tick under the hood.
+currently going deep into nix, standardizing every one of my systems to it, and honestly feeling like it's a revolution.
 
 ## most used
 
