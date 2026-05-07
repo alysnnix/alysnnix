@@ -12,7 +12,8 @@
   location = "brazil";
   stack    = [ "typescript" "go" "nix" "python" "sh" ];
   os       = "nixos";
-  contact  = "aly@alysnnix.dev";
+  contact  = "aly@alysson.dev";
+  resume   = "https://resume.alysson.dev";
 }
 ```
 
