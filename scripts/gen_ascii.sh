@@ -25,6 +25,8 @@ for theme in dark light; do
   "$RIBBON" --style threads --threads 7 --signature --svg "$OUT/ribbon-signature-$theme.svg" --theme "$theme" >/dev/null
 done
 "$RIBBON" --style threads --threads 7 --signature >"$OUT/ribbon-signature-threads.txt"
+# README-terminal-aly's header: "Aly" from the portfolio glyphs, exiting through the y into the band
+"$RIBBON" --style braille --signature --cols 80 --rows 14 --threads 7 >"$OUT/ribbon-signature-braille-80.txt"
 "$RIBBON" --style threads --threads 7 --cols 80 --rows 12 >"$OUT/ribbon-threads-80.txt"
 "$RIBBON" --style braille --threads 9 --cols 80 --rows 12 >"$OUT/ribbon-braille-80.txt"
 "$RIBBON" --style shade --threads 12 --cols 80 --rows 12 >"$OUT/ribbon-shade-80.txt"

@@ -27,13 +27,18 @@ import math
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageChops, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from image_to_ascii import BRAILLE_BITS, RAMPS  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-SIGNATURE = ROOT / "assets/aly-signature-mono.png"
+# the signature's outlines in glyph units: portfolio src/lib/glyphs.ts ALY_GLYPHS, as scripts/card-kit.ts draws them
+GLYPHS = ROOT / "assets/aly-signature-dark.svg"
+# its ink box in glyph units, and where the ribbon leaves it: portfolio src/lib/ribbon.ts TAIL,
+# the end of the y's flourish, the direction it is heading and the stroke's width there
+INK = (11, -190, 340, 91)
+TAIL = {"x": 325.5, "y": -28.8, "dx": 0.833, "dy": -0.554, "w": 19.6}
 # a cell is twice as tall as it is wide: 10 by 20 units keeps the geometry isotropic
 UX, UY = 10, 20
 # the portfolio tokens (src/styles/global.css): ink, then the ribbon's rb-1, rb-2, rb-3
@@ -65,20 +70,56 @@ def catmull(points: list[tuple[float, float]], steps: int) -> list[tuple[float, 
     return out
 
 
-def signature_layer(w: float, h: float, height: float, left: float) -> tuple[Image.Image, tuple[float, float], tuple[float, float, float, float]]:
-    """The signature scaled to `height` units, its box, and its exit: the rightmost ink, the y's flourish."""
-    img = Image.open(SIGNATURE).convert("L")
-    box = Image.eval(img, lambda v: 255 - v).getbbox()
-    img = img.crop(box)
-    k = height / img.height
-    top = (h - height) / 2 - h * 0.04
-    px = img.load()
-    ex, ey = max(((x, y) for y in range(img.height) for x in range(img.width) if px[x, y] < 128), key=lambda p: p[0])
-    return img, (left + ex * k, top + ey * k), (left, top, left + img.width * k, top + height)
+def glyph_outlines() -> list[list[list[tuple[float, float]]]]:
+    """Each glyph as closed polygons in glyph units, from the SVG's absolute M, L, Q, Z paths."""
+    import re
+
+    glyphs = []
+    for d in re.findall(r' d="([^"]+)"', GLYPHS.read_text()):
+        polys: list[list[tuple[float, float]]] = []
+        tokens = re.findall(r"[MLQZ]|-?\d*\.?\d+", d)
+        i, cmd, pen = 0, "", (0.0, 0.0)
+        while i < len(tokens):
+            if tokens[i] in "MLQZ":
+                cmd = tokens[i]
+                i += 1
+                if cmd == "Z":
+                    continue
+            nums = lambda n: [float(v) for v in tokens[i : i + n]]  # noqa: E731
+            if cmd == "M":
+                pen = tuple(nums(2))
+                polys.append([pen])
+                i += 2
+                cmd = "L"
+            elif cmd == "L":
+                pen = tuple(nums(2))
+                polys[-1].append(pen)
+                i += 2
+            elif cmd == "Q":
+                cx, cy, x, y = nums(4)
+                (px, py) = pen
+                for k in range(1, 9):
+                    t = k / 8
+                    polys[-1].append(((1 - t) ** 2 * px + 2 * (1 - t) * t * cx + t * t * x, (1 - t) ** 2 * py + 2 * (1 - t) * t * cy + t * t * y))
+                pen = (x, y)
+                i += 4
+        glyphs.append(polys)
+    return glyphs
 
 
-def lay_threads(center: list[tuple[float, float]], n: int, open_: float, ramp: float, twist: float, born_open: bool) -> list[list[tuple[float, float, float]]]:
-    """Each thread as (x, y, depth) samples; depth > 0 faces the viewer."""
+def place_signature(h: float, left: float, height: float):
+    """The signature `height` units tall at `left`, vertically centred: its polygons and the ribbon's tail, in scene units."""
+    k = height / (INK[3] - INK[1])
+    x0 = left - INK[0] * k
+    y0 = (h - height) / 2 - INK[1] * k
+    to = lambda x, y: (x0 + x * k, y0 + y * k)  # noqa: E731
+    glyphs = [[[to(x, y) for x, y in poly] for poly in g] for g in glyph_outlines()]
+    tail = (*to(TAIL["x"], TAIL["y"]), TAIL["dx"], TAIL["dy"], TAIL["w"] * k)
+    return glyphs, tail
+
+
+def lay_threads(center: list[tuple[float, float]], n: int, open_: float, ramp: float, twist: float, born_open: bool, neck: float = 2) -> list[list[tuple[float, float, float]]]:
+    """Each thread as (x, y, depth) samples; depth > 0 faces the viewer. The band starts `neck` wide, the stroke it leaves."""
     threads: list[list[tuple[float, float, float]]] = [[] for _ in range(n)]
     offsets = [-1 + 2 * i / (n - 1) for i in range(n)]
     s = 0.0
@@ -91,7 +132,7 @@ def lay_threads(center: list[tuple[float, float]], n: int, open_: float, ramp: f
         nx, ny = -(by - ay) / length, (bx - ax) / length
         r = 1.0 if born_open else min(1.0, s / ramp)
         r = r * r * (3 - 2 * r)
-        width = 2 + (open_ - 2) * r * (0.84 + 0.16 * math.sin(s / 170))
+        width = neck + (open_ - neck) * r * (0.84 + 0.16 * math.sin(s / 170))
         theta = r * (s * twist + 0.35) + (1.1 if born_open else 0)
         for t, thread in zip(offsets, threads):
             off = width / 2 * t * math.cos(theta)
@@ -99,20 +140,21 @@ def lay_threads(center: list[tuple[float, float]], n: int, open_: float, ramp: f
     return threads
 
 
-def scene(cols: int, rows: int, n: int, with_signature: bool):
+def scene(cols: int, rows: int, n: int, with_signature: bool, sig_height: float = 0.9, twist: float = 1.2, open_share: float = 0.42):
     w, h = cols * UX, rows * UY
     sig = None
     if with_signature:
-        img, (tx, ty), box = signature_layer(w, h, h * 0.78, UX * 1)
-        sig = (img, box)
-        # out of the y's flourish: a short rise, then a slow S off the right edge
-        path = [(tx, ty), (tx + 40, ty - 26), (tx + 0.16 * w, h * 0.24), (0.58 * w, h * 0.72), (0.82 * w, h * 0.30), (1.08 * w, h * 0.46)]
-        open_, born_open = h * 0.5, False
-    else:
-        path = [(-0.06 * w, h * 0.30), (0.22 * w, h * 0.68), (0.5 * w, h * 0.30), (0.76 * w, h * 0.70), (1.06 * w, h * 0.36)]
-        open_, born_open = h * 0.56, True
+        sig, (tx, ty, dx, dy, tw) = place_signature(h, UX * 1, h * sig_height)
+        # out of the y's flourish along its own heading, one shallow crest, one wide dip, off the right edge.
+        # The band stays narrow through the crest and opens on the long run after it: a turn tighter than
+        # half the band's width folds the inner threads over and tangles them into loops.
+        path = [(tx, ty), (tx + dx * 40, ty + dy * 40), (0.56 * w, h * 0.22), (0.8 * w, h * 0.58), (1.12 * w, h * 0.3)]
+        center = catmull(path, 200)
+        threads = lay_threads(center, n, h * open_share, ramp=w * 0.42, twist=twist / w, born_open=False, neck=tw)
+        return w, h, threads, sig
+    path = [(-0.06 * w, h * 0.30), (0.22 * w, h * 0.68), (0.5 * w, h * 0.30), (0.76 * w, h * 0.70), (1.06 * w, h * 0.36)]
     center = catmull(path, 160)
-    threads = lay_threads(center, n, open_, ramp=w * 0.22, twist=4.6 / w, born_open=born_open)
+    threads = lay_threads(center, n, h * 0.56, ramp=w * 0.22, twist=4.6 / w, born_open=True)
     return w, h, threads, sig
 
 
@@ -128,9 +170,17 @@ def draw(w: float, h: float, threads, sig, scale: float, line: int) -> tuple[Ima
         for (x0, y0, z0), (x1, y1, _) in zip(thread, thread[1:]):
             (df if z0 >= 0 else db).line((x0 * scale, y0 * scale, x1 * scale, y1 * scale), fill=255, width=line)
     if sig:
-        img, (l, t, r, b) = sig
-        part = Image.eval(img, lambda v: 255 - v).resize((round((r - l) * scale), round((b - t) * scale)), Image.LANCZOS)
-        ink.paste(part, (round(l * scale), round(t * scale)))
+        # fill at 4x and box filter down, so edge pixels carry coverage instead of jaggies;
+        # even-odd per glyph (a counter is a subpath inside its outline), union across glyphs
+        big = Image.new("L", (size[0] * 4, size[1] * 4), 0)
+        for glyph in sig:
+            g = Image.new("L", big.size, 0)
+            for poly in glyph:
+                p = Image.new("L", big.size, 0)
+                ImageDraw.Draw(p).polygon([(x * scale * 4, y * scale * 4) for x, y in poly], fill=255)
+                g = ImageChops.difference(g, p)
+            big = ImageChops.lighter(big, g)
+        ink.paste(big.resize(size, Image.BOX))
     return front, back, ink
 
 
@@ -172,7 +222,8 @@ def style_braille(cols, rows, w, h, threads, sig):
             code, tiers = 0, [0, 0, 0]
             for dx, dy, bit in BRAILLE_BITS:
                 x, y = cx * 2 + dx, cy * 4 + dy
-                hit = [p[x, y] > 100 for p in px]
+                # a thread dot lights at any touch; signature ink needs half the dot covered, so its edges stay clean
+                hit = [px[0][x, y] > 100, px[1][x, y] > 100, px[2][x, y] > 120]
                 if any(hit):
                     code |= bit
                     tiers[2 if hit[2] else 0 if hit[0] else 1] += 1
@@ -277,11 +328,14 @@ def main() -> None:
     ap.add_argument("--rows", type=int, default=14)
     ap.add_argument("--threads", type=int, default=9, help="threads in the band")
     ap.add_argument("--signature", action="store_true", help='start from the "Aly" signature, like the site')
+    ap.add_argument("--sig-height", type=float, default=0.9, help="signature ink height as a share of the rows")
+    ap.add_argument("--twist", type=float, default=1.2, help="with --signature: band turns across the width, radians; high values turn it edge on")
+    ap.add_argument("--open", type=float, default=0.42, help="with --signature: widest the band opens, as a share of the rows")
     ap.add_argument("--svg", type=Path, help="also write a gradient SVG of the same art here")
     ap.add_argument("--theme", choices=tuple(THEMES), default="dark", help="SVG colors")
     a = ap.parse_args()
 
-    w, h, threads, sig = scene(a.cols, a.rows, a.threads, a.signature)
+    w, h, threads, sig = scene(a.cols, a.rows, a.threads, a.signature, a.sig_height, a.twist, a.open)
     grid = STYLES[a.style](a.cols, a.rows, w, h, threads, sig)
     sys.stdout.write(to_text(grid, "\u2800 " if a.style == "braille" else " "))
     if a.svg:
