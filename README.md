@@ -3,6 +3,9 @@
   <img src="./assets/ascii/ribbon-signature-dots-light.svg" alt="Aly, the signature turning into a ribbon" width="640">
 </picture>
 
+<br />
+<br />
+
 ```nix
 # $ nix eval .#aly
 {
