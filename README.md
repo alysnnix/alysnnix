@@ -28,9 +28,15 @@ usage: aly <topic>
 ```
 
 ```console
-$ ls ~/made
-framebudget/   devproxy/   apollo-fleet/
-aly.engineer/  resume.aly.engineer/
+$ ls -la ~/made
+total 5
+drwxr-xr-x  aly  staff   4096  Oct 23 13:40  .
+drwxr-xr-x  aly  staff   4096  Jun 01  2021  ..
+drwxr-xr-x  aly  staff   4096  Oct 21 22:18  framebudget/
+drwxr-xr-x  aly  staff   4096  Oct 21 20:05  aly.engineer/
+drwxr-xr-x  aly  staff   4096  Oct 23 13:02  resume.aly.engineer/
+drwxr-xr-x  aly  staff   4096  Jul 20 11:47  apollo-fleet/
+drwxr-xr-x  aly  staff   4096  Jul 03 16:30  devproxy/
 ```
 
 - [`framebudget/`](https://framebudget.dev) measures a device's frame budget before the first paint and enables only the effects that fit. 4.6 KB gzip, React, Vue and Angular bindings, MIT.
