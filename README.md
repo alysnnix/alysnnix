@@ -1,7 +1,11 @@
+<div align="center">
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/ascii/ribbon-signature-dots-dark.svg">
   <img src="./assets/ascii/ribbon-signature-dots-light.svg" alt="Aly, the signature turning into a ribbon" width="640">
 </picture>
+
+</div>
 
 <br />
 <br />
