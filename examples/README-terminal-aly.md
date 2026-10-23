@@ -6,20 +6,12 @@
   Keep the langs markers: .github/workflows/github-langs.yml rewrites the block between them every day.
 -->
 
-```text
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀
-⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⡀⠀⢠⡶⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⣖⡺⠭⢵⣒⣒⣒⣒⣒⣒⠮⢭⣒⠦⣄
-⠀⠀⢀⣴⣾⠿⠛⠛⣛⡻⠛⢠⣿⠁⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⣔⣮⣟⡮⣽⣒⡮⠭⠭⢖⣒⣒⣒⡒⠬⢭⣓⡪⣝⡲⢝⡲⣄
-⠀⢠⣾⡟⠁⠀⠀⢸⣿⠇⠀⣾⡏⢀⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣻⢮⣽⣓⡶⠭⠭⠭⠥⠖⠒⠦⠭⠭⣓⡲⢭⣓⢯⣳⢭⣺⢝⡦⣄
-⠀⣾⣿⠁⠀⠀⠀⣿⣿⠀⠀⣿⣇⣾⠃⣴⣷⠀⣴⡗⠀⠀⣀⣤⣴⣾⣿⣿⣿⣿⠿⠿⠽⠛⠓⠒⠋⠉⠉⠉⠉⠉⠉⠉⠉⠉⠙⠒⠭⣗⡮⣝⡮⣕⡮⣗⢯⣺⢽⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣶⣶
-⠀⣿⣿⠀⠀⠀⣼⣿⡏⠀⠘⣿⡿⠃⢀⣿⡇⣰⣿⡇⣴⣿⡿⠟⠛⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠯⣓⠭⣳⢽⣺⢽⣺⡽⣞⣯⡷⠶⠶⠶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛
-⠀⠙⢿⣷⣶⡾⠋⢿⣿⣶⡿⠻⣷⣶⡾⣿⣿⢿⣿⡿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠒⠭⣖⡯⢷⣻⣽⠶⠿⠿⠿⣿⣶⣿⣿⣿⡿⠿⠟⠛⠉⠁
-⠀⠀⠀⠀⠁⠀⠀⠀⠈⠀⠀⠀⠀⠁⠀⢀⣴⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠓⠚⠛⠛⠛⠛⠓⠋⠉⠁
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡟⢁⣿⠃
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣷⠾⠃
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/ascii/ribbon-signature-dots-dark.svg">
+  <img src="./assets/ascii/ribbon-signature-dots-light.svg" alt="Aly, the signature turning into a ribbon" width="640">
+</picture>
 
-```console
+```text
 $ nix eval .#aly
 {
   name  = "alysson alcantara";
@@ -33,7 +25,7 @@ $ nix eval .#aly
 
 Hi, I'm Aly. I build web products in Brazil, and I like the parts where a slow page or a failed payment costs real money.
 
-```console
+```text
 $ aly --help
 usage: aly <topic>
 
@@ -43,7 +35,7 @@ usage: aly <topic>
   ui     design systems people reuse
 ```
 
-```console
+```text
 $ ls ~/made
 framebudget/   devproxy/   apollo-fleet/
 aly.engineer/  resume.aly.engineer/
@@ -55,14 +47,14 @@ aly.engineer/  resume.aly.engineer/
 - [`aly.engineer/`](https://aly.engineer) my site, lab and [blog](https://aly.engineer/blog).
 - [`resume.aly.engineer/`](https://resume.aly.engineer) my resume. Astro, pt-BR and en, Cloudflare Workers.
 
-```console
+```text
 $ cat ~/.now
 shipping framebudget 0.9
 ```
 
 [aly.engineer](https://aly.engineer) &nbsp;/&nbsp; [blog](https://aly.engineer/blog) &nbsp;/&nbsp; [resume](https://resume.aly.engineer) &nbsp;/&nbsp; [linkedin](https://linkedin.com/in/alysnnix) &nbsp;/&nbsp; [4ly.alcantara@gmail.com](mailto:4ly.alcantara@gmail.com)
 
-```console
+```text
 $ aly --langs
 ```
 

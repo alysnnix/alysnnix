@@ -27,6 +27,9 @@ done
 "$RIBBON" --style threads --threads 7 --signature >"$OUT/ribbon-signature-threads.txt"
 # README-terminal-aly's header: "Aly" from the portfolio glyphs, exiting through the y into the band
 "$RIBBON" --style braille --signature --cols 80 --rows 11 --threads 7 --sig-height 0.8 >"$OUT/ribbon-signature-braille-80.txt"
+# The README header: the same braille art as dots in an SVG, so GitHub draws no code box around it.
+python3 scripts/braille_svg.py "$OUT/ribbon-signature-braille-80.txt" --ink '#e6edf3' >"$OUT/ribbon-signature-dots-dark.svg"
+python3 scripts/braille_svg.py "$OUT/ribbon-signature-braille-80.txt" --ink '#1f2328' >"$OUT/ribbon-signature-dots-light.svg"
 "$RIBBON" --style threads --threads 7 --cols 80 --rows 12 >"$OUT/ribbon-threads-80.txt"
 "$RIBBON" --style braille --threads 9 --cols 80 --rows 12 >"$OUT/ribbon-braille-80.txt"
 "$RIBBON" --style shade --threads 12 --cols 80 --rows 12 >"$OUT/ribbon-shade-80.txt"
